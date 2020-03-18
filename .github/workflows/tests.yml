@@ -1052,36 +1052,6 @@ jobs:
         with:
           name: ct-msg_store-logs-OTPv${{matrix.otp}}
           path: "*-ct-logs-*.tar.xz"
-  ct-partitions:
-    needs: check
-    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-partitions - OTPv${{matrix.otp}}
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
-    steps:
-      - name: CHECKOUT REPOSITORY
-        uses: actions/checkout@v2
-      # https://github.com/marketplace/actions/setup-elixir
-      - name: CONFIGURE OTP & ELIXIR
-        uses: actions/setup-elixir@v1
-        with:
-          otp-version: ${{matrix.otp}}
-          # https://github.com/elixir-lang/elixir/releases
-          elixir-version: 1.10.2
-      - name: RUN TESTS
-        run: |
-          branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make ct-partitions base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-          make compress-ct-logs
-      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
-        # https://github.com/marketplace/actions/upload-artifact
-        uses: actions/upload-artifact@v2-preview
-        # if: failure()
-        with:
-          name: ct-partitions-logs-OTPv${{matrix.otp}}
-          path: "*-ct-logs-*.tar.xz"
   ct-peer_discovery_dns:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
@@ -1261,4 +1231,934 @@ jobs:
         # if: failure()
         with:
           name: ct-per_vhost_queue_limit-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-plugin_versioning:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-plugin_versioning - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-plugin_versioning base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-plugin_versioning-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-policy:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-policy - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-policy base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-policy-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-priority_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-priority_queue - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-priority_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-priority_queue-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-priority_queue_recovery:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-priority_queue_recovery - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-priority_queue_recovery base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-priority_queue_recovery-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-product_info:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-product_info - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-product_info base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-product_info-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-proxy_protocol:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-proxy_protocol - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-proxy_protocol base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-proxy_protocol-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-publisher_confirms_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-publisher_confirms_parallel - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-publisher_confirms_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-publisher_confirms_parallel-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-queue_master_location:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-queue_master_location - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-queue_master_location base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-queue_master_location-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-queue_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-queue_parallel - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-queue_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-queue_parallel-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-quorum_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-quorum_queue - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-quorum_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-quorum_queue-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_core_metrics_gc:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_core_metrics_gc - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_core_metrics_gc base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_core_metrics_gc-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo_int:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo_int - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo_int base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo_int-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo_prop:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo_prop - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo_prop base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo_prop-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmq_queues_cli_integration:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmq_queues_cli_integration - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmq_queues_cli_integration base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmq_queues_cli_integration-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmqctl_integration:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmqctl_integration - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmqctl_integration base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmqctl_integration-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmqctl_shutdown:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmqctl_shutdown - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmqctl_shutdown base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmqctl_shutdown-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-signal_handling:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-signal_handling - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-signal_handling base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-signal_handling-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-simple_ha:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-simple_ha - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-simple_ha base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-simple_ha-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-single_active_consumer:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-single_active_consumer - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-single_active_consumer base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-single_active_consumer-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-sup_delayed_restart:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-sup_delayed_restart - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-sup_delayed_restart base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-sup_delayed_restart-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-sync_detection:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-sync_detection - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-sync_detection base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-sync_detection-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-term_to_binary_compat_prop:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-term_to_binary_compat_prop - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-term_to_binary_compat_prop base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-term_to_binary_compat_prop-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-topic_permission:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-topic_permission - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-topic_permission base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-topic_permission-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_inbroker_non_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_inbroker_non_parallel - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_inbroker_non_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_inbroker_non_parallel-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_inbroker_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_inbroker_parallel - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_inbroker_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_inbroker_parallel-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_log_config:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_log_config - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_log_config base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_log_config-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_queue_consumers:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_queue_consumers - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_queue_consumers base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_queue_consumers-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-vhost:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-vhost - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-vhost base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-vhost-logs-OTPv${{matrix.otp}}
+          path: "*-ct-logs-*.tar.xz"
+  ct-worker_pool:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-worker_pool - OTPv${{matrix.otp}}
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        otp: [21.3, 22.2]
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-worker_pool base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-worker_pool-logs-OTPv${{matrix.otp}}
           path: "*-ct-logs-*.tar.xz"
