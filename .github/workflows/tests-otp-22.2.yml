@@ -1,24 +1,10 @@
-# This is what we would like to do if YAML anchors were supported:
-#
-# min_supported_otp_version: &min_supported_otp_version 21.3
-# max_supported_otp_version: &max_supported_otp_version 22.2
-# min_and_max_supported_otp_versions: &min_and_max_supported_otp_versions [21.3, 22.2]
-# elixir_version: &elixir_version 1.10.2
-# vm_image: &vm_image ubuntu-18.04
-#
-# Since they are not, we will need to use search & replace when these change.
-# The assumption that we should be using some sort of templating (e.g. ytt) is still being challenged.
-
 # https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow
-name: Tests
+name: Tests - OTP v22.2
 on: push
 jobs:
   check:
-    name: Checks - OTPv${{matrix.otp}}
+    name: Checks
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -26,7 +12,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: CHECK RABBITMQ COMPONENTS
@@ -41,11 +27,8 @@ jobs:
   eunit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: eunit - OTPv${{matrix.otp}}
+    name: eunit
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -53,7 +36,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -65,11 +48,8 @@ jobs:
   ct-amqqueue_backward_compatibility:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-amqqueue_backward_compatibility - OTPv${{matrix.otp}}
+    name: ct-amqqueue_backward_compatibility
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -77,7 +57,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -90,16 +70,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-amqqueue_backward_compatibility-logs-OTPv${{matrix.otp}}
+          name: ct-amqqueue_backward_compatibility-logs
           path: "*-ct-logs-*.tar.xz"
   ct-authn_authz_context_propagation:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-authn_authz_context_propagation - OTPv${{matrix.otp}}
+    name: ct-authn_authz_context_propagation
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -107,7 +84,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -120,16 +97,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-authn_authz_context_propagation-logs-OTPv${{matrix.otp}}
+          name: ct-authn_authz_context_propagation-logs
           path: "*-ct-logs-*.tar.xz"
   ct-backing_queue:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-backing_queue - OTPv${{matrix.otp}}
+    name: ct-backing_queue
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -137,7 +111,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -150,16 +124,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-backing_queue-logs-OTPv${{matrix.otp}}
+          name: ct-backing_queue-logs
           path: "*-ct-logs-*.tar.gz"
   ct-channel_interceptor:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-channel_interceptor - OTPv${{matrix.otp}}
+    name: ct-channel_interceptor
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -167,7 +138,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -180,16 +151,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-channel_interceptor-logs-OTPv${{matrix.otp}}
+          name: ct-channel_interceptor-logs
           path: "*-ct-logs-*.tar.xz"
   ct-channel_operation_timeout:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-channel_operation_timeout - OTPv${{matrix.otp}}
+    name: ct-channel_operation_timeout
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -197,7 +165,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -210,16 +178,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-channel_operation_timeout-logs-OTPv${{matrix.otp}}
+          name: ct-channel_operation_timeout-logs
           path: "*-ct-logs-*.tar.xz"
   ct-cluster:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-cluster - OTPv${{matrix.otp}}
+    name: ct-cluster
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -227,7 +192,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -240,16 +205,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-cluster-logs-OTPv${{matrix.otp}}
+          name: ct-cluster-logs
           path: "*-ct-logs-*.tar.xz"
   ct-cluster_formation_locking:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-cluster_formation_locking - OTPv${{matrix.otp}}
+    name: ct-cluster_formation_locking
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -257,7 +219,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -270,16 +232,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-cluster_formation_locking-logs-OTPv${{matrix.otp}}
+          name: ct-cluster_formation_locking-logs
           path: "*-ct-logs-*.tar.xz"
   ct-cluster_rename:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-cluster_rename - OTPv${{matrix.otp}}
+    name: ct-cluster_rename
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -287,7 +246,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -300,16 +259,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-cluster_rename-logs-OTPv${{matrix.otp}}
+          name: ct-cluster_rename-logs
           path: "*-ct-logs-*.tar.xz"
   ct-clustering_management_clustered_2_nodes:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-clustering_management_clustered_2_nodes - OTPv${{matrix.otp}}
+    name: ct-clustering_management_clustered_2_nodes
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -317,7 +273,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -330,16 +286,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-clustering_management_clustered_2_nodes-logs-OTPv${{matrix.otp}}
+          name: ct-clustering_management_clustered_2_nodes-logs
           path: "*-ct-logs-*.tar.xz"
   ct-clustering_management_clustered_4_nodes:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-clustering_management_clustered_4_nodes - OTPv${{matrix.otp}}
+    name: ct-clustering_management_clustered_4_nodes
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -347,7 +300,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -360,16 +313,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-clustering_management_clustered_4_nodes-logs-OTPv${{matrix.otp}}
+          name: ct-clustering_management_clustered_4_nodes-logs
           path: "*-ct-logs-*.tar.xz"
   ct-clustering_management_unclustered_2_nodes:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-clustering_management_unclustered_2_nodes - OTPv${{matrix.otp}}
+    name: ct-clustering_management_unclustered_2_nodes
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -377,7 +327,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -390,16 +340,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-clustering_management_unclustered_2_nodes-logs-OTPv${{matrix.otp}}
+          name: ct-clustering_management_unclustered_2_nodes-logs
           path: rabbit-ct-logs-*.tar.xz
   ct-clustering_management_unclustered_3_nodes:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-clustering_management_unclustered_3_nodes - OTPv${{matrix.otp}}
+    name: ct-clustering_management_unclustered_3_nodes
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -407,7 +354,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -420,16 +367,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-clustering_management_unclustered_3_nodes-logs-OTPv${{matrix.otp}}
+          name: ct-clustering_management_unclustered_3_nodes-logs
           path: "*-ct-logs-*.tar.xz"
   ct-config_schema:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-config_schema - OTPv${{matrix.otp}}
+    name: ct-config_schema
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -437,7 +381,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -450,16 +394,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-config_schema-logs-OTPv${{matrix.otp}}
+          name: ct-config_schema-logs
           path: "*-ct-logs-*.tar.xz"
   ct-confirms_rejects:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-confirms_rejects - OTPv${{matrix.otp}}
+    name: ct-confirms_rejects
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -467,7 +408,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -480,16 +421,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-confirms_rejects-logs-OTPv${{matrix.otp}}
+          name: ct-confirms_rejects-logs
           path: "*-ct-logs-*.tar.xz"
   ct-consumer_timeout:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-consumer_timeout - OTPv${{matrix.otp}}
+    name: ct-consumer_timeout
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -497,7 +435,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -510,16 +448,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-consumer_timeout-logs-OTPv${{matrix.otp}}
+          name: ct-consumer_timeout-logs
           path: "*-ct-logs-*.tar.xz"
   ct-crashing_queues:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-crashing_queues - OTPv${{matrix.otp}}
+    name: ct-crashing_queues
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -527,7 +462,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -540,16 +475,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-crashing_queues-logs-OTPv${{matrix.otp}}
+          name: ct-crashing_queues-logs
           path: "*-ct-logs-*.tar.xz"
   ct-credential_validation:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-credential_validation - OTPv${{matrix.otp}}
+    name: ct-credential_validation
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -557,7 +489,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -570,16 +502,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-credential_validation-logs-OTPv${{matrix.otp}}
+          name: ct-credential_validation-logs
           path: "*-ct-logs-*.tar.xz"
   ct-dead_lettering:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-dead_lettering - OTPv${{matrix.otp}}
+    name: ct-dead_lettering
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -587,7 +516,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -600,16 +529,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-dead_lettering-logs-OTPv${{matrix.otp}}
+          name: ct-dead_lettering-logs
           path: "*-ct-logs-*.tar.xz"
   ct-definition_import:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-definition_import - OTPv${{matrix.otp}}
+    name: ct-definition_import
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -617,7 +543,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -630,16 +556,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-definition_import-logs-OTPv${{matrix.otp}}
+          name: ct-definition_import-logs
           path: "*-ct-logs-*.tar.xz"
   ct-disconnect_detected_during_alarm:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-disconnect_detected_during_alarm - OTPv${{matrix.otp}}
+    name: ct-disconnect_detected_during_alarm
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -647,7 +570,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -660,16 +583,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-disconnect_detected_during_alarm-logs-OTPv${{matrix.otp}}
+          name: ct-disconnect_detected_during_alarm-logs
           path: "*-ct-logs-*.tar.xz"
   ct-dynamic_ha:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-dynamic_ha - OTPv${{matrix.otp}}
+    name: ct-dynamic_ha
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -677,7 +597,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -690,16 +610,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-dynamic_ha-logs-OTPv${{matrix.otp}}
+          name: ct-dynamic_ha-logs
           path: "*-ct-logs-*.tar.xz"
   ct-dynamic_qq:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-dynamic_qq - OTPv${{matrix.otp}}
+    name: ct-dynamic_qq
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -707,7 +624,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -720,16 +637,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-dynamic_qq-logs-OTPv${{matrix.otp}}
+          name: ct-dynamic_qq-logs
           path: "*-ct-logs-*.tar.xz"
   ct-eager_sync:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-eager_sync - OTPv${{matrix.otp}}
+    name: ct-eager_sync
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -737,7 +651,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -750,16 +664,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-eager_sync-logs-OTPv${{matrix.otp}}
+          name: ct-eager_sync-logs
           path: "*-ct-logs-*.tar.xz"
   ct-feature_flags:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-feature_flags - OTPv${{matrix.otp}}
+    name: ct-feature_flags
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -767,7 +678,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -780,16 +691,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-feature_flags-logs-OTPv${{matrix.otp}}
+          name: ct-feature_flags-logs
           path: "*-ct-logs-*.tar.xz"
   ct-gm:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-gm - OTPv${{matrix.otp}}
+    name: ct-gm
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -797,7 +705,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -810,16 +718,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-gm-logs-OTPv${{matrix.otp}}
+          name: ct-gm-logs
           path: "*-ct-logs-*.tar.xz"
   ct-health_check:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-health_check - OTPv${{matrix.otp}}
+    name: ct-health_check
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -827,7 +732,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -840,16 +745,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-health_check-logs-OTPv${{matrix.otp}}
+          name: ct-health_check-logs
           path: "*-ct-logs-*.tar.xz"
   ct-lazy_queue:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-lazy_queue - OTPv${{matrix.otp}}
+    name: ct-lazy_queue
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -857,7 +759,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -870,16 +772,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-lazy_queue-logs-OTPv${{matrix.otp}}
+          name: ct-lazy_queue-logs
           path: "*-ct-logs-*.tar.xz"
   ct-list_consumers_sanity_check:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-list_consumers_sanity_check - OTPv${{matrix.otp}}
+    name: ct-list_consumers_sanity_check
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -887,7 +786,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -900,16 +799,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-list_consumers_sanity_check-logs-OTPv${{matrix.otp}}
+          name: ct-list_consumers_sanity_check-logs
           path: "*-ct-logs-*.tar.xz"
   ct-list_queues_online_and_offline:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-list_queues_online_and_offline - OTPv${{matrix.otp}}
+    name: ct-list_queues_online_and_offline
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -917,7 +813,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -930,16 +826,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-list_queues_online_and_offline-logs-OTPv${{matrix.otp}}
+          name: ct-list_queues_online_and_offline-logs
           path: "*-ct-logs-*.tar.xz"
   ct-many_node_ha:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-many_node_ha - OTPv${{matrix.otp}}
+    name: ct-many_node_ha
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -947,7 +840,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -960,16 +853,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-many_node_ha-logs-OTPv${{matrix.otp}}
+          name: ct-many_node_ha-logs
           path: "*-ct-logs-*.tar.xz"
   ct-metrics:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-metrics - OTPv${{matrix.otp}}
+    name: ct-metrics
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -977,7 +867,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -990,16 +880,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-metrics-logs-OTPv${{matrix.otp}}
+          name: ct-metrics-logs
           path: "*-ct-logs-*.tar.xz"
   ct-mirrored_supervisor:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-mirrored_supervisor - OTPv${{matrix.otp}}
+    name: ct-mirrored_supervisor
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1007,7 +894,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1020,16 +907,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-mirrored_supervisor-logs-OTPv${{matrix.otp}}
+          name: ct-mirrored_supervisor-logs
           path: "*-ct-logs-*.tar.xz"
   ct-msg_store:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-msg_store - OTPv${{matrix.otp}}
+    name: ct-msg_store
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1037,7 +921,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1050,16 +934,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-msg_store-logs-OTPv${{matrix.otp}}
+          name: ct-msg_store-logs
           path: "*-ct-logs-*.tar.xz"
   ct-peer_discovery_dns:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-peer_discovery_dns - OTPv${{matrix.otp}}
+    name: ct-peer_discovery_dns
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1067,7 +948,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1080,16 +961,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-peer_discovery_dns-logs-OTPv${{matrix.otp}}
+          name: ct-peer_discovery_dns-logs
           path: "*-ct-logs-*.tar.xz"
   ct-per_user_connection_tracking:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-per_user_connection_tracking - OTPv${{matrix.otp}}
+    name: ct-per_user_connection_tracking
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1097,7 +975,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1110,16 +988,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-per_user_connection_tracking-logs-OTPv${{matrix.otp}}
+          name: ct-per_user_connection_tracking-logs
           path: "*-ct-logs-*.tar.xz"
   ct-per_vhost_connection_limit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-per_vhost_connection_limit - OTPv${{matrix.otp}}
+    name: ct-per_vhost_connection_limit
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1127,7 +1002,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1140,16 +1015,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-per_vhost_connection_limit-logs-OTPv${{matrix.otp}}
+          name: ct-per_vhost_connection_limit-logs
           path: "*-ct-logs-*.tar.xz"
   ct-per_vhost_connection_limit_partitions:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-per_vhost_connection_limit_partitions - OTPv${{matrix.otp}}
+    name: ct-per_vhost_connection_limit_partitions
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1157,7 +1029,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1170,16 +1042,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-per_vhost_connection_limit_partitions-logs-OTPv${{matrix.otp}}
+          name: ct-per_vhost_connection_limit_partitions-logs
           path: "*-ct-logs-*.tar.xz"
   ct-per_vhost_msg_store:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-per_vhost_msg_store - OTPv${{matrix.otp}}
+    name: ct-per_vhost_msg_store
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1187,7 +1056,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1200,16 +1069,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-per_vhost_msg_store-logs-OTPv${{matrix.otp}}
+          name: ct-per_vhost_msg_store-logs
           path: "*-ct-logs-*.tar.xz"
   ct-per_vhost_queue_limit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-per_vhost_queue_limit - OTPv${{matrix.otp}}
+    name: ct-per_vhost_queue_limit
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1217,7 +1083,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1230,16 +1096,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-per_vhost_queue_limit-logs-OTPv${{matrix.otp}}
+          name: ct-per_vhost_queue_limit-logs
           path: "*-ct-logs-*.tar.xz"
   ct-plugin_versioning:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-plugin_versioning - OTPv${{matrix.otp}}
+    name: ct-plugin_versioning
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1247,7 +1110,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1260,16 +1123,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-plugin_versioning-logs-OTPv${{matrix.otp}}
+          name: ct-plugin_versioning-logs
           path: "*-ct-logs-*.tar.xz"
   ct-policy:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-policy - OTPv${{matrix.otp}}
+    name: ct-policy
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1277,7 +1137,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1290,16 +1150,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-policy-logs-OTPv${{matrix.otp}}
+          name: ct-policy-logs
           path: "*-ct-logs-*.tar.xz"
   ct-priority_queue:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-priority_queue - OTPv${{matrix.otp}}
+    name: ct-priority_queue
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1307,7 +1164,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1320,16 +1177,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-priority_queue-logs-OTPv${{matrix.otp}}
+          name: ct-priority_queue-logs
           path: "*-ct-logs-*.tar.xz"
   ct-priority_queue_recovery:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-priority_queue_recovery - OTPv${{matrix.otp}}
+    name: ct-priority_queue_recovery
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1337,7 +1191,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1350,16 +1204,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-priority_queue_recovery-logs-OTPv${{matrix.otp}}
+          name: ct-priority_queue_recovery-logs
           path: "*-ct-logs-*.tar.xz"
   ct-product_info:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-product_info - OTPv${{matrix.otp}}
+    name: ct-product_info
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1367,7 +1218,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1380,16 +1231,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-product_info-logs-OTPv${{matrix.otp}}
+          name: ct-product_info-logs
           path: "*-ct-logs-*.tar.xz"
   ct-proxy_protocol:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-proxy_protocol - OTPv${{matrix.otp}}
+    name: ct-proxy_protocol
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1397,7 +1245,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1410,16 +1258,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-proxy_protocol-logs-OTPv${{matrix.otp}}
+          name: ct-proxy_protocol-logs
           path: "*-ct-logs-*.tar.xz"
   ct-publisher_confirms_parallel:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-publisher_confirms_parallel - OTPv${{matrix.otp}}
+    name: ct-publisher_confirms_parallel
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1427,7 +1272,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1440,16 +1285,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-publisher_confirms_parallel-logs-OTPv${{matrix.otp}}
+          name: ct-publisher_confirms_parallel-logs
           path: "*-ct-logs-*.tar.xz"
   ct-queue_master_location:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-queue_master_location - OTPv${{matrix.otp}}
+    name: ct-queue_master_location
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1457,7 +1299,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1470,16 +1312,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-queue_master_location-logs-OTPv${{matrix.otp}}
+          name: ct-queue_master_location-logs
           path: "*-ct-logs-*.tar.xz"
   ct-queue_parallel:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-queue_parallel - OTPv${{matrix.otp}}
+    name: ct-queue_parallel
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1487,7 +1326,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1500,16 +1339,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-queue_parallel-logs-OTPv${{matrix.otp}}
+          name: ct-queue_parallel-logs
           path: "*-ct-logs-*.tar.xz"
   ct-quorum_queue:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-quorum_queue - OTPv${{matrix.otp}}
+    name: ct-quorum_queue
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1517,7 +1353,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1530,16 +1366,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-quorum_queue-logs-OTPv${{matrix.otp}}
+          name: ct-quorum_queue-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbit_core_metrics_gc:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbit_core_metrics_gc - OTPv${{matrix.otp}}
+    name: ct-rabbit_core_metrics_gc
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1547,7 +1380,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1560,16 +1393,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbit_core_metrics_gc-logs-OTPv${{matrix.otp}}
+          name: ct-rabbit_core_metrics_gc-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbit_fifo:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbit_fifo - OTPv${{matrix.otp}}
+    name: ct-rabbit_fifo
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1577,7 +1407,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1590,16 +1420,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbit_fifo-logs-OTPv${{matrix.otp}}
+          name: ct-rabbit_fifo-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbit_fifo_int:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbit_fifo_int - OTPv${{matrix.otp}}
+    name: ct-rabbit_fifo_int
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1607,7 +1434,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1620,16 +1447,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbit_fifo_int-logs-OTPv${{matrix.otp}}
+          name: ct-rabbit_fifo_int-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbit_fifo_prop:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbit_fifo_prop - OTPv${{matrix.otp}}
+    name: ct-rabbit_fifo_prop
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1637,7 +1461,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1650,16 +1474,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbit_fifo_prop-logs-OTPv${{matrix.otp}}
+          name: ct-rabbit_fifo_prop-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbitmq_queues_cli_integration:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbitmq_queues_cli_integration - OTPv${{matrix.otp}}
+    name: ct-rabbitmq_queues_cli_integration
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1667,7 +1488,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1680,16 +1501,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbitmq_queues_cli_integration-logs-OTPv${{matrix.otp}}
+          name: ct-rabbitmq_queues_cli_integration-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbitmqctl_integration:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbitmqctl_integration - OTPv${{matrix.otp}}
+    name: ct-rabbitmqctl_integration
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1697,7 +1515,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1710,16 +1528,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbitmqctl_integration-logs-OTPv${{matrix.otp}}
+          name: ct-rabbitmqctl_integration-logs
           path: "*-ct-logs-*.tar.xz"
   ct-rabbitmqctl_shutdown:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-rabbitmqctl_shutdown - OTPv${{matrix.otp}}
+    name: ct-rabbitmqctl_shutdown
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1727,7 +1542,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1740,16 +1555,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-rabbitmqctl_shutdown-logs-OTPv${{matrix.otp}}
+          name: ct-rabbitmqctl_shutdown-logs
           path: "*-ct-logs-*.tar.xz"
   ct-signal_handling:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-signal_handling - OTPv${{matrix.otp}}
+    name: ct-signal_handling
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1757,7 +1569,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1770,16 +1582,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-signal_handling-logs-OTPv${{matrix.otp}}
+          name: ct-signal_handling-logs
           path: "*-ct-logs-*.tar.xz"
   ct-simple_ha:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-simple_ha - OTPv${{matrix.otp}}
+    name: ct-simple_ha
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1787,7 +1596,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1800,16 +1609,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-simple_ha-logs-OTPv${{matrix.otp}}
+          name: ct-simple_ha-logs
           path: "*-ct-logs-*.tar.xz"
   ct-single_active_consumer:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-single_active_consumer - OTPv${{matrix.otp}}
+    name: ct-single_active_consumer
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1817,7 +1623,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1830,16 +1636,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-single_active_consumer-logs-OTPv${{matrix.otp}}
+          name: ct-single_active_consumer-logs
           path: "*-ct-logs-*.tar.xz"
   ct-sup_delayed_restart:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-sup_delayed_restart - OTPv${{matrix.otp}}
+    name: ct-sup_delayed_restart
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1847,7 +1650,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1860,16 +1663,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-sup_delayed_restart-logs-OTPv${{matrix.otp}}
+          name: ct-sup_delayed_restart-logs
           path: "*-ct-logs-*.tar.xz"
   ct-sync_detection:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-sync_detection - OTPv${{matrix.otp}}
+    name: ct-sync_detection
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1877,7 +1677,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1890,16 +1690,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-sync_detection-logs-OTPv${{matrix.otp}}
+          name: ct-sync_detection-logs
           path: "*-ct-logs-*.tar.xz"
   ct-term_to_binary_compat_prop:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-term_to_binary_compat_prop - OTPv${{matrix.otp}}
+    name: ct-term_to_binary_compat_prop
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1907,7 +1704,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1920,16 +1717,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-term_to_binary_compat_prop-logs-OTPv${{matrix.otp}}
+          name: ct-term_to_binary_compat_prop-logs
           path: "*-ct-logs-*.tar.xz"
   ct-topic_permission:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-topic_permission - OTPv${{matrix.otp}}
+    name: ct-topic_permission
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1937,7 +1731,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1950,16 +1744,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-topic_permission-logs-OTPv${{matrix.otp}}
+          name: ct-topic_permission-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit - OTPv${{matrix.otp}}
+    name: ct-unit
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1967,7 +1758,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -1980,16 +1771,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-unit-logs-OTPv${{matrix.otp}}
+          name: ct-unit-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit_inbroker_non_parallel:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_inbroker_non_parallel - OTPv${{matrix.otp}}
+    name: ct-unit_inbroker_non_parallel
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -1997,7 +1785,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2010,16 +1798,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-unit_inbroker_non_parallel-logs-OTPv${{matrix.otp}}
+          name: ct-unit_inbroker_non_parallel-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit_inbroker_parallel:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_inbroker_parallel - OTPv${{matrix.otp}}
+    name: ct-unit_inbroker_parallel
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -2027,7 +1812,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2040,16 +1825,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-unit_inbroker_parallel-logs-OTPv${{matrix.otp}}
+          name: ct-unit_inbroker_parallel-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit_log_config:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_log_config - OTPv${{matrix.otp}}
+    name: ct-unit_log_config
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -2057,7 +1839,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2070,16 +1852,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-unit_log_config-logs-OTPv${{matrix.otp}}
+          name: ct-unit_log_config-logs
           path: "*-ct-logs-*.tar.xz"
   ct-unit_queue_consumers:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_queue_consumers - OTPv${{matrix.otp}}
+    name: ct-unit_queue_consumers
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -2087,7 +1866,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2100,16 +1879,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-unit_queue_consumers-logs-OTPv${{matrix.otp}}
+          name: ct-unit_queue_consumers-logs
           path: "*-ct-logs-*.tar.xz"
   ct-vhost:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-vhost - OTPv${{matrix.otp}}
+    name: ct-vhost
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -2117,7 +1893,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2130,16 +1906,13 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-vhost-logs-OTPv${{matrix.otp}}
+          name: ct-vhost-logs
           path: "*-ct-logs-*.tar.xz"
   ct-worker_pool:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-worker_pool - OTPv${{matrix.otp}}
+    name: ct-worker_pool
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        otp: [21.3, 22.2]
     steps:
       - name: CHECKOUT REPOSITORY
         uses: actions/checkout@v2
@@ -2147,7 +1920,7 @@ jobs:
       - name: CONFIGURE OTP & ELIXIR
         uses: actions/setup-elixir@v1
         with:
-          otp-version: ${{matrix.otp}}
+          otp-version: 22.2
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
       - name: RUN TESTS
@@ -2160,5 +1933,5 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-worker_pool-logs-OTPv${{matrix.otp}}
+          name: ct-worker_pool-logs
           path: "*-ct-logs-*.tar.xz"

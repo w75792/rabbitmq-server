@@ -1,0 +1,1937 @@
+# https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow
+name: Tests - OTP v21.3
+on: push
+jobs:
+  check:
+    name: Checks
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CHECK RABBITMQ COMPONENTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make check-rabbitmq-components.mk base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      # TODO: Are there any xref results that we should capture as artefacts?
+      - name: CHECK CROSS REFERENCES
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make xref base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+  eunit:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: eunit
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make eunit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+# To find what ct suites we need to add & in which order:
+# fly -t ci.rabbitmq jobs -p server-release:v3.9.x | grep rabbitmq-server:ct- | sort
+  ct-amqqueue_backward_compatibility:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-amqqueue_backward_compatibility
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-amqqueue_backward_compatibility base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-amqqueue_backward_compatibility-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-authn_authz_context_propagation:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-authn_authz_context_propagation
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-authn_authz_context_propagation base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-authn_authz_context_propagation-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-backing_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-backing_queue
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-backing_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-backing_queue-logs
+          path: "*-ct-logs-*.tar.gz"
+  ct-channel_interceptor:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-channel_interceptor
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-channel_interceptor base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-channel_interceptor-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-channel_operation_timeout:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-channel_operation_timeout
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-channel_operation_timeout base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-channel_operation_timeout-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-cluster:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-cluster
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-cluster base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-cluster-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-cluster_formation_locking:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-cluster_formation_locking
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-cluster_formation_locking base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-cluster_formation_locking-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-cluster_rename:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-cluster_rename
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-cluster_rename base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-cluster_rename-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-clustering_management_clustered_2_nodes:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-clustering_management_clustered_2_nodes
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-clustering_management t=clustered_2_nodes base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-clustering_management_clustered_2_nodes-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-clustering_management_clustered_4_nodes:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-clustering_management_clustered_4_nodes
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-clustering_management t=clustered_4_nodes base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-clustering_management_clustered_4_nodes-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-clustering_management_unclustered_2_nodes:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-clustering_management_unclustered_2_nodes
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-clustering_management t=unclustered_2_nodes base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-clustering_management_unclustered_2_nodes-logs
+          path: rabbit-ct-logs-*.tar.xz
+  ct-clustering_management_unclustered_3_nodes:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-clustering_management_unclustered_3_nodes
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-clustering_management t=unclustered_3_nodes base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-clustering_management_unclustered_3_nodes-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-config_schema:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-config_schema
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-config_schema base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-config_schema-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-confirms_rejects:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-confirms_rejects
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-confirms_rejects base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-confirms_rejects-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-consumer_timeout:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-consumer_timeout
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-consumer_timeout base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-consumer_timeout-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-crashing_queues:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-crashing_queues
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-crashing_queues base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-crashing_queues-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-credential_validation:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-credential_validation
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-credential_validation base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-credential_validation-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-dead_lettering:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-dead_lettering
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-dead_lettering base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-dead_lettering-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-definition_import:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-definition_import
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-definition_import base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-definition_import-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-disconnect_detected_during_alarm:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-disconnect_detected_during_alarm
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-disconnect_detected_during_alarm base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-disconnect_detected_during_alarm-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-dynamic_ha:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-dynamic_ha
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-dynamic_ha base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-dynamic_ha-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-dynamic_qq:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-dynamic_qq
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-dynamic_qq base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-dynamic_qq-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-eager_sync:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-eager_sync
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-eager_sync base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-eager_sync-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-feature_flags:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-feature_flags
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-feature_flags base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-feature_flags-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-gm:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-gm
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-gm base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-gm-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-health_check:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-health_check
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-health_check base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-health_check-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-lazy_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-lazy_queue
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-lazy_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-lazy_queue-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-list_consumers_sanity_check:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-list_consumers_sanity_check
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-list_consumers_sanity_check base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-list_consumers_sanity_check-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-list_queues_online_and_offline:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-list_queues_online_and_offline
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-list_queues_online_and_offline base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-list_queues_online_and_offline-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-many_node_ha:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-many_node_ha
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-many_node_ha base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-many_node_ha-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-metrics:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-metrics
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-metrics base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-metrics-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-mirrored_supervisor:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-mirrored_supervisor
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-mirrored_supervisor base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-mirrored_supervisor-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-msg_store:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-msg_store
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-msg_store base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-msg_store-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-peer_discovery_dns:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-peer_discovery_dns
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-peer_discovery_dns base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-peer_discovery_dns-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-per_user_connection_tracking:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-per_user_connection_tracking
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-per_user_connection_tracking base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-per_user_connection_tracking-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-per_vhost_connection_limit:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-per_vhost_connection_limit
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-per_vhost_connection_limit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-per_vhost_connection_limit-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-per_vhost_connection_limit_partitions:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-per_vhost_connection_limit_partitions
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-per_vhost_connection_limit_partitions base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-per_vhost_connection_limit_partitions-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-per_vhost_msg_store:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-per_vhost_msg_store
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-per_vhost_msg_store base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-per_vhost_msg_store-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-per_vhost_queue_limit:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-per_vhost_queue_limit
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-per_vhost_queue_limit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-per_vhost_queue_limit-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-plugin_versioning:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-plugin_versioning
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-plugin_versioning base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-plugin_versioning-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-policy:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-policy
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-policy base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-policy-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-priority_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-priority_queue
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-priority_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-priority_queue-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-priority_queue_recovery:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-priority_queue_recovery
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-priority_queue_recovery base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-priority_queue_recovery-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-product_info:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-product_info
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-product_info base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-product_info-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-proxy_protocol:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-proxy_protocol
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-proxy_protocol base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-proxy_protocol-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-publisher_confirms_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-publisher_confirms_parallel
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-publisher_confirms_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-publisher_confirms_parallel-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-queue_master_location:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-queue_master_location
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-queue_master_location base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-queue_master_location-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-queue_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-queue_parallel
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-queue_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-queue_parallel-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-quorum_queue:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-quorum_queue
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-quorum_queue base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-quorum_queue-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_core_metrics_gc:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_core_metrics_gc
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_core_metrics_gc base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_core_metrics_gc-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo_int:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo_int
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo_int base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo_int-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbit_fifo_prop:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbit_fifo_prop
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbit_fifo_prop base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbit_fifo_prop-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmq_queues_cli_integration:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmq_queues_cli_integration
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmq_queues_cli_integration base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmq_queues_cli_integration-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmqctl_integration:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmqctl_integration
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmqctl_integration base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmqctl_integration-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-rabbitmqctl_shutdown:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-rabbitmqctl_shutdown
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-rabbitmqctl_shutdown base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-rabbitmqctl_shutdown-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-signal_handling:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-signal_handling
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-signal_handling base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-signal_handling-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-simple_ha:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-simple_ha
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-simple_ha base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-simple_ha-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-single_active_consumer:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-single_active_consumer
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-single_active_consumer base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-single_active_consumer-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-sup_delayed_restart:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-sup_delayed_restart
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-sup_delayed_restart base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-sup_delayed_restart-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-sync_detection:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-sync_detection
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-sync_detection base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-sync_detection-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-term_to_binary_compat_prop:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-term_to_binary_compat_prop
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-term_to_binary_compat_prop base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-term_to_binary_compat_prop-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-topic_permission:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-topic_permission
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-topic_permission base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-topic_permission-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_inbroker_non_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_inbroker_non_parallel
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_inbroker_non_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_inbroker_non_parallel-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_inbroker_parallel:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_inbroker_parallel
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_inbroker_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_inbroker_parallel-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_log_config:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_log_config
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_log_config base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_log_config-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-unit_queue_consumers:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-unit_queue_consumers
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-unit_queue_consumers base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-unit_queue_consumers-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-vhost:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-vhost
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-vhost base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-vhost-logs
+          path: "*-ct-logs-*.tar.xz"
+  ct-worker_pool:
+    needs: check
+    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
+    name: ct-worker_pool
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make ct-worker_pool base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make compress-ct-logs
+      - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-worker_pool-logs
+          path: "*-ct-logs-*.tar.xz"
