@@ -68,7 +68,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-amqqueue_backward_compatibility-logs
           path: "*-ct-logs-*.tar.xz"
@@ -95,7 +95,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-authn_authz_context_propagation-logs
           path: "*-ct-logs-*.tar.xz"
@@ -122,7 +122,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-backing_queue-logs
           path: "*-ct-logs-*.tar.gz"
@@ -149,7 +149,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-channel_interceptor-logs
           path: "*-ct-logs-*.tar.xz"
@@ -176,7 +176,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-channel_operation_timeout-logs
           path: "*-ct-logs-*.tar.xz"
@@ -203,7 +203,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-cluster-logs
           path: "*-ct-logs-*.tar.xz"
@@ -230,7 +230,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-cluster_formation_locking-logs
           path: "*-ct-logs-*.tar.xz"
@@ -257,7 +257,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-cluster_rename-logs
           path: "*-ct-logs-*.tar.xz"
@@ -284,7 +284,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-clustering_management_clustered_2_nodes-logs
           path: "*-ct-logs-*.tar.xz"
@@ -311,7 +311,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-clustering_management_clustered_4_nodes-logs
           path: "*-ct-logs-*.tar.xz"
@@ -338,7 +338,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-clustering_management_unclustered_2_nodes-logs
           path: rabbit-ct-logs-*.tar.xz
@@ -365,7 +365,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-clustering_management_unclustered_3_nodes-logs
           path: "*-ct-logs-*.tar.xz"
@@ -392,7 +392,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-config_schema-logs
           path: "*-ct-logs-*.tar.xz"
@@ -419,7 +419,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-confirms_rejects-logs
           path: "*-ct-logs-*.tar.xz"
@@ -446,7 +446,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-consumer_timeout-logs
           path: "*-ct-logs-*.tar.xz"
@@ -473,7 +473,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-crashing_queues-logs
           path: "*-ct-logs-*.tar.xz"
@@ -500,7 +500,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-credential_validation-logs
           path: "*-ct-logs-*.tar.xz"
@@ -527,7 +527,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-dead_lettering-logs
           path: "*-ct-logs-*.tar.xz"
@@ -554,7 +554,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-definition_import-logs
           path: "*-ct-logs-*.tar.xz"
@@ -581,7 +581,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-disconnect_detected_during_alarm-logs
           path: "*-ct-logs-*.tar.xz"
@@ -608,7 +608,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-dynamic_ha-logs
           path: "*-ct-logs-*.tar.xz"
@@ -635,7 +635,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-dynamic_qq-logs
           path: "*-ct-logs-*.tar.xz"
@@ -689,7 +689,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-feature_flags-logs
           path: "*-ct-logs-*.tar.xz"
@@ -716,7 +716,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-gm-logs
           path: "*-ct-logs-*.tar.xz"
@@ -743,7 +743,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-health_check-logs
           path: "*-ct-logs-*.tar.xz"
@@ -770,7 +770,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-lazy_queue-logs
           path: "*-ct-logs-*.tar.xz"
@@ -797,7 +797,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-list_consumers_sanity_check-logs
           path: "*-ct-logs-*.tar.xz"
@@ -824,7 +824,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-list_queues_online_and_offline-logs
           path: "*-ct-logs-*.tar.xz"
@@ -851,7 +851,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-many_node_ha-logs
           path: "*-ct-logs-*.tar.xz"
@@ -878,7 +878,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-metrics-logs
           path: "*-ct-logs-*.tar.xz"
@@ -905,7 +905,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-mirrored_supervisor-logs
           path: "*-ct-logs-*.tar.xz"
@@ -932,7 +932,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-msg_store-logs
           path: "*-ct-logs-*.tar.xz"
@@ -959,7 +959,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-peer_discovery_dns-logs
           path: "*-ct-logs-*.tar.xz"
@@ -986,7 +986,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-per_user_connection_tracking-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1013,7 +1013,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-per_vhost_connection_limit-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1040,7 +1040,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-per_vhost_connection_limit_partitions-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1067,7 +1067,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-per_vhost_msg_store-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1094,7 +1094,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-per_vhost_queue_limit-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1121,7 +1121,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-plugin_versioning-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1148,7 +1148,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-policy-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1175,7 +1175,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-priority_queue-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1202,7 +1202,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-priority_queue_recovery-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1229,7 +1229,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-product_info-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1256,7 +1256,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-proxy_protocol-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1283,7 +1283,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-publisher_confirms_parallel-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1310,7 +1310,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-queue_master_location-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1337,7 +1337,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-queue_parallel-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1364,7 +1364,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-quorum_queue-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1391,7 +1391,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbit_core_metrics_gc-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1418,7 +1418,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbit_fifo-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1445,7 +1445,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbit_fifo_int-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1472,7 +1472,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbit_fifo_prop-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1499,7 +1499,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbitmq_queues_cli_integration-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1526,7 +1526,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbitmqctl_integration-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1553,7 +1553,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-rabbitmqctl_shutdown-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1580,7 +1580,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-signal_handling-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1607,7 +1607,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-simple_ha-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1634,7 +1634,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-single_active_consumer-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1661,7 +1661,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-sup_delayed_restart-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1688,7 +1688,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-sync_detection-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1715,7 +1715,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-term_to_binary_compat_prop-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1742,7 +1742,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-topic_permission-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1769,7 +1769,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-unit-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1796,7 +1796,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-unit_inbroker_non_parallel-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1823,7 +1823,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-unit_inbroker_parallel-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1850,7 +1850,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-unit_log_config-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1877,7 +1877,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-unit_queue_consumers-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1904,7 +1904,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-vhost-logs
           path: "*-ct-logs-*.tar.xz"
@@ -1931,7 +1931,7 @@ jobs:
       - name: ON FAILURE CAPTURE TESTS LOGS AS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: ct-worker_pool-logs
           path: "*-ct-logs-*.tar.xz"
