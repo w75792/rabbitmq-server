@@ -1967,36 +1967,6 @@ jobs:
         with:
           name: ct-unit-logs
           path: "*-ct-logs-*.tar.xz"
-  ct-unit_inbroker_non_parallel:
-    needs: check
-    # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
-    name: ct-unit_inbroker_non_parallel
-    runs-on: ubuntu-18.04
-    steps:
-      - name: CHECKOUT REPOSITORY
-        uses: actions/checkout@v2
-      # https://github.com/marketplace/actions/setup-elixir
-      - name: CONFIGURE OTP & ELIXIR
-        uses: actions/setup-elixir@v1
-        with:
-          otp-version: 22.2
-          # https://github.com/elixir-lang/elixir/releases
-          elixir-version: 1.10.2
-      - name: RUN TESTS
-        run: |
-          branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make ct-unit_inbroker_non_parallel base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-      - name: ON FAILURE ARCHIVE TESTS LOGS
-        if: failure()
-        run: |
-          make ct-logs-archive
-      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
-        # https://github.com/marketplace/actions/upload-artifact
-        uses: actions/upload-artifact@v2-preview
-        if: failure()
-        with:
-          name: ct-unit_inbroker_non_parallel-logs
-          path: "*-ct-logs-*.tar.xz"
   ct-unit_inbroker_parallel:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
