@@ -3,7 +3,7 @@ name: OTP v21.3
 on: push
 jobs:
   check:
-    name: Checks
+    name: checks
     runs-on: ubuntu-18.04
     steps:
       - name: CHECKOUT REPOSITORY
@@ -27,6 +27,26 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make xref base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+  deps:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: RESOLVE DEPS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: rabbitmq-common
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make -C deps/rabbit_common tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
   eunit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
