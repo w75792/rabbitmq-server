@@ -23,11 +23,25 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make bats base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: RESOLVE DEPS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: CHECK CROSS REFERENCES
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make xref base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-  deps:
+  rabbitmq-common:
     runs-on: ubuntu-18.04
     steps:
       - name: CHECKOUT REPOSITORY
@@ -39,14 +53,58 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
-      - name: RESOLVE DEPS
-        run: |
-          branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-      - name: rabbitmq-common
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/rabbit_common tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        # if: failure()
+        run: |
+          make -C deps/rabbit_common ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: rabbitmq-common-logs
+          path: "deps/rabbit_common/*-ct-logs-*.tar.xz"
+  rabbitmq-cli:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: CHECKOUT REPOSITORY
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-elixir
+      - name: CONFIGURE OTP & ELIXIR
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: 21.3
+          # https://github.com/elixir-lang/elixir/releases
+          elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: RUN TESTS
+        run: |
+          branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: ON FAILURE ARCHIVE TESTS LOGS
+        # if: failure()
+        run: |
+          make -C deps/rabbitmq_cli ct-logs-archive
+      - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
+        # https://github.com/marketplace/actions/upload-artifact
+        uses: actions/upload-artifact@v2-preview
+        # if: failure()
+        with:
+          name: ct-amqqueue_backward_compatibility-logs
+          path: "deps/rabbitmq_cli/*-ct-logs-*.tar.xz"
   eunit:
     needs: check
     # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
@@ -62,6 +120,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -83,6 +151,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -113,6 +191,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -143,6 +231,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -173,6 +271,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -203,6 +311,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -233,6 +351,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -263,6 +391,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -293,6 +431,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -323,6 +471,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -353,6 +511,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -383,6 +551,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -413,6 +591,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -443,6 +631,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -473,6 +671,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -503,6 +711,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -533,6 +751,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -563,6 +791,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -593,6 +831,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -623,6 +871,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -653,6 +911,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -683,6 +951,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -713,6 +991,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -743,6 +1031,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -773,6 +1071,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -806,6 +1114,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -836,6 +1154,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -866,6 +1194,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -896,6 +1234,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -926,6 +1274,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -956,6 +1314,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -986,6 +1354,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1016,6 +1394,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1046,6 +1434,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1076,6 +1474,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1106,6 +1514,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1136,6 +1554,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1166,6 +1594,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1196,6 +1634,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1226,6 +1674,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1256,6 +1714,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1286,6 +1754,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1316,6 +1794,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1346,6 +1834,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1376,6 +1874,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1406,6 +1914,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1436,6 +1954,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1466,6 +1994,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1496,6 +2034,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1526,6 +2074,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1556,6 +2114,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1586,6 +2154,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1616,6 +2194,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1646,6 +2234,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1676,6 +2274,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1706,6 +2314,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1736,6 +2354,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1766,6 +2394,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1796,6 +2434,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1826,6 +2474,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1856,6 +2514,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1886,6 +2554,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1916,6 +2594,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1946,6 +2634,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -1976,6 +2674,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -2006,6 +2714,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -2036,6 +2754,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -2066,6 +2794,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -2096,6 +2834,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
@@ -2126,6 +2874,16 @@ jobs:
           otp-version: 21.3
           # https://github.com/elixir-lang/elixir/releases
           elixir-version: 1.10.2
+      - name: CACHE DEPS
+        uses: actions/cache@v1
+        with:
+          path: deps
+          key: otp-21.3_git-${{ github.sha }}_deps
+      - name: CACHE EBIN
+        uses: actions/cache@v1
+        with:
+          path: ebin
+          key: otp-21.3_git-${{ github.sha }}_ebin
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
