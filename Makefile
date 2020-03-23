@@ -241,6 +241,10 @@ FAST_CT_SUITES := $(filter-out $(sort $(SLOW_CT_SUITES)),$(CT_SUITES))
 ct-fast: CT_SUITES = $(FAST_CT_SUITES)
 ct-slow: CT_SUITES = $(SLOW_CT_SUITES)
 
+rabbitmq-cli-test-deps:
+	$(verbose) echo "Resolve deps required to run rabbitmq-cli tests..."
+	$(verbose) $(MAKE) test-deps TEST_DEPS=rabbitmq_server_release PLUGINS="rabbitmq_federation rabbitmq_stomp"
+
 # --------------------------------------------------------------------
 # Compilation.
 # --------------------------------------------------------------------

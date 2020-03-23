@@ -28,10 +28,10 @@ jobs:
         with:
           path: deps
           key: otp-21.3_git-${{ github.sha }}_deps
-      - name: RESOLVE DEPS
+      - name: RESOLVE & COMPILE DEPS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make deps test-deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make deps test-deps rabbitmq-cli-test-deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: CACHE EBIN
         uses: actions/cache@v1
         with:
@@ -62,6 +62,7 @@ jobs:
       - name: RUN TESTS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
+          make -C deps/rabbitmq_server_release start-background-broker PLUGINS="rabbitmq_federation rabbitmq_stomp"
           make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE ARCHIVE TESTS LOGS
         # if: failure()
