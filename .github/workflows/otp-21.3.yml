@@ -31,7 +31,7 @@ jobs:
       - name: RESOLVE DEPS
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
-          make deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+          make deps test-deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: CACHE EBIN
         uses: actions/cache@v1
         with:
