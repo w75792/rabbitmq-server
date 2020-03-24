@@ -72,15 +72,11 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/rabbitmq_server_release start-background-broker PLUGINS="rabbitmq_federation rabbitmq_stomp"
-          if ! make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-          then
-            echo "Running rabbitmq-cli tests again, until this gets fixed: https://github.com/rabbitmq/rabbitmq-server/runs/530632572?check_suite_focus=true#step:5:532"
-            make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-          fi
+          make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: rabbitmq-cli-logs
           path: "deps/rabbitmq_cli/log"
