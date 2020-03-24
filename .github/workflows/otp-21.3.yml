@@ -64,17 +64,13 @@ jobs:
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/rabbitmq_server_release start-background-broker PLUGINS="rabbitmq_federation rabbitmq_stomp"
           make -C deps/rabbitmq_cli tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
-      - name: ON FAILURE ARCHIVE TESTS LOGS
-        # if: failure()
-        run: |
-          make -C deps/rabbitmq_cli ct-logs-archive
       - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: ct-amqqueue_backward_compatibility-logs
-          path: "deps/rabbitmq_cli/*-ct-logs-*.tar.xz"
+          name: rabbitmq-cli-logs
+          path: "deps/rabbitmq_cli/log"
   rabbitmq-common:
     runs-on: ubuntu-18.04
     needs: check
