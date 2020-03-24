@@ -23,6 +23,7 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make bats base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      # https://help.github.com/en/actions/configuring-and-managing-workflows/caching-dependencies-to-speed-up-workflows
       - name: CACHE DEPS
         uses: actions/cache@v1
         with:
@@ -32,6 +33,14 @@ jobs:
         run: |
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make deps test-deps rabbitmq-cli-test-deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
+      - name: GENERATE DEPS VERSIONS
+        run: |
+          make rabbitmq-server-tested-deps.mk
+      - name: UPLOAD DEPS VERSIONS
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: rabbitmq-server-tested-deps.mk
+          path: rabbitmq-server-tests-deps.mk
       - name: CACHE EBIN
         uses: actions/cache@v1
         with:

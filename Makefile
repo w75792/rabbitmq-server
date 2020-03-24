@@ -245,6 +245,12 @@ rabbitmq-cli-test-deps:
 	$(verbose) echo "Resolve deps required to run rabbitmq-cli tests..."
 	$(verbose) $(MAKE) test-deps TEST_DEPS=rabbitmq_server_release PLUGINS="rabbitmq_federation rabbitmq_stomp"
 
+rabbitmq-server-tested-deps.mk:
+	$(verbose) (cd $(DEPS_DIR)/amqp_client && echo "dep_amqp_client = git https://github.com/rabbitmq/rabbitmq-erlang-client.git $$(git rev-parse HEAD)") >> $@
+	$(verbose) (cd $(DEPS_DIR)/rabbitmq_cli && echo "dep_rabbitmq_cli = git https://github.com/rabbitmq/rabbitmq-cli.git $$(git rev-parse HEAD)") >> $@
+	$(verbose) (cd $(DEPS_DIR)/rabbitmq_codegen && echo "dep_rabbitmq_codegen = git https://github.com/rabbitmq/rabbitmq-codegen.git $$(git rev-parse HEAD)") >> $@
+	$(verbose) (cd $(DEPS_DIR)/rabbit_common && echo "dep_rabbit_common = git https://github.com/rabbitmq/rabbitmq-common.git $$(git rev-parse HEAD)") >> $@
+
 # --------------------------------------------------------------------
 # Compilation.
 # --------------------------------------------------------------------
