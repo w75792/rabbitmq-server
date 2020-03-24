@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         with:
           name: rabbitmq-server-tested-deps.mk
-          path: rabbitmq-server-tests-deps.mk
+          path: rabbitmq-server-tested-deps.mk
       - name: CACHE EBIN
         uses: actions/cache@v1
         with:
