@@ -135,7 +135,7 @@ jobs:
         uses: actions/upload-artifact@v2-preview
         # if: failure()
         with:
-          name: rabbitmq-common-logs
+          name: rabbitmq-erlang-client-logs
           path: "deps/amqp_client/*-ct-logs-*.tar.xz"
   eunit:
     needs: [rabbitmq-common, rabbitmq-cli, rabbitmq-erlang-client]
