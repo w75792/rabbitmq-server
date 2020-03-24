@@ -103,13 +103,13 @@ jobs:
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/rabbit_common tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE ARCHIVE TESTS LOGS
-        # if: failure()
+        if: failure()
         run: |
           make -C deps/rabbit_common ct-logs-archive
       - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: rabbitmq-common-logs
           path: "deps/rabbit_common/*-ct-logs-*.tar.xz"
@@ -136,13 +136,13 @@ jobs:
           branch_or_tag_name=${GITHUB_REF#refs/*/}
           make -C deps/amqp_client tests DEPS_DIR=$PWD/deps base_rmq_ref=master current_rmq_ref=$branch_or_tag_name
       - name: ON FAILURE ARCHIVE TESTS LOGS
-        # if: failure()
+        if: failure()
         run: |
           make -C deps/amqp_client ct-logs-archive
       - name: ON FAILURE UPLOAD TESTS LOGS ARTIFACT
         # https://github.com/marketplace/actions/upload-artifact
         uses: actions/upload-artifact@v2-preview
-        # if: failure()
+        if: failure()
         with:
           name: rabbitmq-erlang-client-logs
           path: "deps/amqp_client/*-ct-logs-*.tar.xz"
