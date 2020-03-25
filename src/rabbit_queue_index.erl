@@ -23,7 +23,7 @@
          read/3, next_segment_boundary/1, bounds/1, start/2, stop/1]).
 
 -export([add_queue_ttl/0, avoid_zeroes/0, store_msg_size/0, store_msg/0]).
--export([scan_queue_segments/3]).
+-export([persistent_non_acked_messages/1]).
 
 %% Migrates from global to per-vhost message stores
 -export([move_to_per_vhost_stores/1,
@@ -32,6 +32,7 @@
          cleanup_global_recovery_terms/0]).
 
 -define(CLEAN_FILENAME, "clean.dot").
+-define(POOL_NAME, ?MODULE).
 
 %%----------------------------------------------------------------------------
 
@@ -702,50 +703,82 @@ recover_message(false,     _, no_del,  RelSeq, {Segment, DirtyCount}, _MaxJourna
 %%----------------------------------------------------------------------------
 
 queue_index_walker({start, DurableQueues}) when is_list(DurableQueues) ->
+    %% to parallelize on segments, not just queues, we need to submit
+    %% work based on segments to the main worker pool in a throttled
+    %% way that doesn't block the caller. We create a small new worker
+    %% pool to perform that role.
+    {ok, WorkerPoolSup} = worker_pool_sup:start_link(2, ?POOL_NAME),
     {ok, Gatherer} = gatherer:start_link(),
     [begin
          ok = gatherer:fork(Gatherer),
          ok = worker_pool:submit_async(
-                fun () -> link(Gatherer),
-                          ok = queue_index_walker_reader(QueueName, Gatherer),
-                          unlink(Gatherer),
-                          ok
+                ?POOL_NAME,
+                fun () ->
+                        link(Gatherer),
+                        ok = queue_index_walker_reader(QueueName, Gatherer),
+                        ok = gatherer:finish(Gatherer),
+                        unlink(Gatherer),
+                        ok
                 end)
      end || QueueName <- DurableQueues],
-    queue_index_walker({next, Gatherer});
+    queue_index_walker({next, Gatherer, WorkerPoolSup});
 
-queue_index_walker({next, Gatherer}) when is_pid(Gatherer) ->
+queue_index_walker({next, Gatherer, WorkerPoolSup}) when is_pid(Gatherer) ->
     case gatherer:out(Gatherer) of
         empty ->
             ok = gatherer:stop(Gatherer),
+            unlink(WorkerPoolSup),
+            exit(WorkerPoolSup, shutdown),
             finished;
         {value, {MsgId, Count}} ->
-            {MsgId, Count, {next, Gatherer}}
+            {MsgId, Count, {next, Gatherer, WorkerPoolSup}}
     end.
 
-queue_index_walker_reader(QueueName, Gatherer) ->
-    ok = scan_queue_segments(
-           fun (_SeqId, MsgId, _MsgProps, true, _IsDelivered, no_ack, ok)
-                 when is_binary(MsgId) ->
-                   gatherer:sync_in(Gatherer, {MsgId, 1});
-               (_SeqId, _MsgId, _MsgProps, _IsPersistent, _IsDelivered,
-                _IsAcked, Acc) ->
-                   Acc
-           end, ok, QueueName),
-    ok = gatherer:finish(Gatherer).
+segment_persistent_message_ids(Segment) ->
+    segment_entries_foldr(
+      fun (_, {{MsgId, _, true}, _, no_ack}, Acc)
+            when is_binary(MsgId) ->
+              [MsgId|Acc];
+          (_, _, Acc) ->
+              Acc
+      end, [], Segment).
 
-scan_queue_segments(Fun, Acc, QueueName) ->
+queue_index_walker_reader(QueueName, Gatherer) ->
+    State = #qistate { segments = Segments, dir = Dir } =
+        recover_journal(blank_state(QueueName)),
+
+    {ok, SubGatherer} = gatherer:start_link(),
+    [begin
+         ok = gatherer:fork(SubGatherer),
+         ok = worker_pool:dispatch_sync(
+                fun () ->
+                        link(SubGatherer),
+                        Segment = segment_find_or_new(SegNum, Dir, Segments),
+                        MsgIds = segment_persistent_message_ids(Segment),
+                        ok = lists:foldl(
+                               fun (MsgId, ok) ->
+                                       % it might be better to use `in` here
+                                       gatherer:sync_in(Gatherer, {MsgId, 1});
+                                   (_, Acc) ->
+                                       Acc
+                               end, ok, MsgIds),
+                        ok = gatherer:finish(SubGatherer),
+                        unlink(SubGatherer)
+                end)
+     end || SegNum <- all_segment_nums(State)],
+    empty = gatherer:out(SubGatherer),
+    ok = gatherer:stop(SubGatherer),
+    {_SegmentCounts, _State} = terminate(State),
+    ok.
+
+persistent_non_acked_messages(QueueName) ->
     State = #qistate { segments = Segments, dir = Dir } =
         recover_journal(blank_state(QueueName)),
     Result = lists:foldr(
-      fun (Seg, AccN) ->
-              segment_entries_foldr(
-                fun (RelSeq, {{MsgOrId, MsgProps, IsPersistent},
-                              IsDelivered, IsAcked}, AccM) ->
-                        Fun(reconstruct_seq_id(Seg, RelSeq), MsgOrId, MsgProps,
-                            IsPersistent, IsDelivered, IsAcked, AccM)
-                end, AccN, segment_find_or_new(Seg, Dir, Segments))
-      end, Acc, all_segment_nums(State)),
+               fun (SegmentNum, Acc) ->
+                       Segment = segment_find_or_new(SegmentNum, Dir, Segments),
+                       segment_persistent_message_ids(Segment) ++ Acc
+               end, [], all_segment_nums(State)),
     {_SegmentCounts, _State} = terminate(State),
     Result.
 
