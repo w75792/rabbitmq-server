@@ -757,8 +757,7 @@ queue_index_walker_reader(QueueName, Gatherer) ->
                         MsgIds = segment_persistent_message_ids(Segment),
                         ok = lists:foldl(
                                fun (MsgId, ok) ->
-                                       % it might be better to use `in` here
-                                       gatherer:sync_in(Gatherer, {MsgId, 1});
+                                       gatherer:in(Gatherer, {MsgId, 1});
                                    (_, Acc) ->
                                        Acc
                                end, ok, MsgIds),
