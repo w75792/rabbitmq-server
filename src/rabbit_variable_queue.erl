@@ -2895,7 +2895,7 @@ migrate_queue({QueueName = #resource{virtual_host = VHost, name = Name},
     NewStoreClient = get_per_vhost_store_client(QueueName, NewStore),
     %% WARNING: During persistent_non_acked_messages queue index state
     %% is being recovered and terminated. This can cause side effects!
-    lists:foldr(
+    lists:foldl(
       fun (MsgId, OldC) ->
               migrate_message(MsgId, OldC, NewStoreClient)
       end, OldStoreClient,
